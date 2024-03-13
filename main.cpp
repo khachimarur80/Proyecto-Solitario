@@ -1,13 +1,11 @@
 using namespace std;
 #include "tablero.h"
+#include <iostream>
 
 
 int main() {
-	tCelda celda;
-	tTablero tablero1;
-
-	mostrar(tablero1);
-
-
+	tTablero board;
+	cargar(board);
+	mostrar(board);
 	return 0;
 }
