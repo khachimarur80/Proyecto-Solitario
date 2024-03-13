@@ -47,7 +47,8 @@ void pintaBordeHorizontal(char left, char cross, char right) {
     }
     cout << string(6, Horizontal) << right << endl;
 }
-void pintaBordeCelda(int fila, int filaMeta, int colMeta) {
+
+void pintaBordeCelda(int fila, int filaMeta, int colMeta, const tCeldaArray m) {
     cout << "    ";
     for (int k = 0; k < COLS; k++) {
         cout << Vertical;
@@ -62,7 +63,8 @@ void pintaBordeCelda(int fila, int filaMeta, int colMeta) {
     }
     cout << Vertical << endl;
 }
-void pintaCentroCelda(int fila, int filaMeta, int colMeta) {
+
+void pintaCentroCelda(int fila, int filaMeta, int colMeta, const tCeldaArray m) {
     cout << "  " << setw(2) << fila + 1;
     for (int k = 0; k < COLS; k++) { // cada col
         cout << Vertical;
@@ -94,32 +96,81 @@ void pintaCentroCelda(int fila, int filaMeta, int colMeta) {
 }
 
 // funciones que hacen update del tablero
-void cargar(tTablero& tablero, ifstream& file);
-bool valida(const tTablero& tablero, int fila, int col);
-bool eleccionValida(const tTablero& tablero, int fila, int
-    col);
-void ponCelda(const tTablero& tablero, int fila, int col,
-    tcelda celda);
-	bool esFicha(const tTablero& tablero, int fila, int col);
-bool esVacia(const tTablero& tablero, int fila, int col);
-
-void mostrar(const tTablero& tablero) {
-	system("cls"); // borrar consola
-	cout << Reset;
-	pintaCabecera();
-	pintaBordeHorizontal(UpperLeft, UpperCross, UpperRight);
-	for (int fila = 0; fila < FILS; fila++) {
-		pintaBordeCelda(tablero, fila, f_meta, c_meta);
-		pintaCentroCelda(tablero, fila, f_meta, c_meta);
-		pintaBordeCelda(tablero, fila, f_meta, c_meta);
-		if (fila < FILS - 1) {
-			pintaBordeHorizontal(MidLeft, MidCross, MidRight);
-		}
-		else {
-			pintaBordeHorizontal(LowerLeft, LowerCross, LowerRight);
-		}
-	}
+void cargar(tTablero& table) {
+    ifstream archivo;
+    int aux;
+    archivo.open("tablero.txt");
+    if (archivo.is_open()) {
+        archivo >> table.fila;
+        archivo >> table.columna;
+        archivo >> aux;
+        for (int i = 0; i < table.fila; i++) {
+            for (int j = 0; j < table.fila; j++) {
+                if (aux == 0) {
+                    table.tCeldaArray[i][j] = NULA;
+                }
+                else if (aux == 1) {
+                    table.tCeldaArray[i][j] = VACIA;
+                }
+                else if (aux == 2) {
+                    table.tCeldaArray[i][j] = FICHA;
+                }
+            }
+        }
+        archivo >> table.fMeta;
+        archivo >> table.cMeta;
+        archivo.close();
+    }
+    else {
+        cout << "no se pudo abrir ";
+    }
 }
+bool valida(const tTablero& table, int fila, int col)
+{
+    return true;
+};
+
+bool eleccionValida(const tTablero& table, int fila, int
+    col)
+{
+    return true;
+};
+void ponCelda(const tTablero& table, int fila, int col,
+    tCelda celda)
+{};
+
+bool esFicha(const tTablero& table, int fila, int col)
+{
+    return true;
+};
+
+bool esVacia(const tTablero& table, int fila, int col)
+{
+    return true;
+};
+
+void mostrar(const tTablero& table) {
+    system("cls"); // borrar consola
+    cout << Reset;
+    pintaCabecera();
+    pintaBordeHorizontal(UpperLeft, UpperCross, UpperRight);
+    for (int fila = 0; fila < FILS; fila++) {
+        pintaBordeCelda(fila, f_meta, c_meta, table.tCeldaArray);
+        pintaCentroCelda(fila, f_meta, c_meta, table.tCeldaArray);
+        pintaBordeCelda(fila, f_meta, c_meta, table.tCeldaArray);
+        if (fila < FILS - 1) {
+            pintaBordeHorizontal(MidLeft, MidCross, MidRight);
+        }
+        else {
+            pintaBordeHorizontal(LowerLeft, LowerCross, LowerRight);
+        }
+    }
+}
+
+
+
+
+
 
 
 
