@@ -30,6 +30,9 @@ void ponCelda(const tTablero& table, int fila, int col,
 bool esFicha(const tTablero& table, int fila, int col);
 bool esVacia(const tTablero& table, int fila, int col);
 void mostrar(const tTablero& table);
-
+int numFilas(const tTablero& tablero);
+int numColumnas(const tTablero& tablero);
+void ponMeta(tTablero& tablero, int fila, int col);
 
 #endif
+
