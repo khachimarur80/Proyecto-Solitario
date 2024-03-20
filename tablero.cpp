@@ -1,3 +1,4 @@
+
 #include "tablero.h"
 #include <iostream>
 #include <iomanip>
@@ -103,9 +104,10 @@ void cargar(tTablero& table) {
     if (archivo.is_open()) {
         archivo >> table.fila;
         archivo >> table.columna;
-        archivo >> aux;
+        
         for (int i = 0; i < table.fila; i++) {
-            for (int j = 0; j < table.fila; j++) {
+            for (int j = 0; j < table.columna; j++) {
+                archivo >> aux;
                 if (aux == 0) {
                     table.tCeldaArray[i][j] = NULA;
                 }
@@ -125,28 +127,56 @@ void cargar(tTablero& table) {
         cout << "no se pudo abrir ";
     }
 }
-bool valida(const tTablero& table, int fila, int col)
-{
-    return true;
-};
+bool valida(const tTablero& table, int fila, int col){// lo interpreto como q el numro y fila no son enormes rollo no vale 79 90
+    bool valida;
+    if (fila <= table.fila && col <= table.columna) {
+        valida = true;
+    }
+    else {
+        valida = false;
 
-bool eleccionValida(const tTablero& table, int fila, int
-    col)
+    }
+    return valida;
+}
+
+bool eleccionValida(const tTablero& table, int fila, int col){
+    bool valido;
+   
+    if (valida(table, fila, col)) {
+        if (table.tCeldaArray[fila][col] = FICHA) {
+            valido = true;
+        }
+        else {
+            valido = false;
+        }
+   }
+    return valido;
+}
+void ponCelda(const tTablero& table, int fila, int col,tCelda celda)// La posición se supone válida
 {
-    return true;
-};
-void ponCelda(const tTablero& table, int fila, int col,
-    tCelda celda)
-{};
+    table.tCeldaArray[fila][col] = celda;
+}
 
 bool esFicha(const tTablero& table, int fila, int col)
 {
-    return true;
+    bool valido = false;
+
+    if (table.tCeldaArray[fila][col] == FICHA) {
+        valido = true;
+    }
+
+    return valido;
 };
 
 bool esVacia(const tTablero& table, int fila, int col)
 {
-    return true;
+    bool valido = false;
+
+    if (table.tCeldaArray[fila][col] == VACIA) {
+        valido == true;
+    }
+
+    return valido;
 };
 
 void mostrar(const tTablero& table) {
@@ -166,7 +196,17 @@ void mostrar(const tTablero& table) {
         }
     }
 }
+int numFilas(const tTablero& tablero) {// es demasiado facil quiza lo he entendido mal uWu
+    return tablero.fila;
+}
+int numColumnas(const tTablero& tablero){
+return tablero.columna;
+}
 
+void ponMeta(tTablero& tablero, int fila, int col) {
+    tablero.fMeta = fila;
+    tablero.cMeta = col;
+}
 
 
 
