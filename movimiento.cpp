@@ -172,7 +172,7 @@ bool eligeMovimientoInverso(const tTablero& tablero, int fila, int col, tMovimie
 		posibles.movimientoArray[posibles.pos] = movimiento;
 		posibles.pos += 1;
 	}
-	else if(posibleMovimientoInverso(tablero, fila, col, ABAJO)) {
+	if(posibleMovimientoInverso(tablero, fila, col, ABAJO)) {
 		tMovimiento movimiento;
 		movimiento.direccion = ABAJO;
 		movimiento.filaDestino = fila - 2;
@@ -182,23 +182,23 @@ bool eligeMovimientoInverso(const tTablero& tablero, int fila, int col, tMovimie
 		posibles.movimientoArray[posibles.pos] = movimiento;
 		posibles.pos += 1;
 	}
-	else if (posibleMovimientoInverso(tablero, fila, col, DERECHA)) {
+	if (posibleMovimientoInverso(tablero, fila, col, DERECHA)) {
 		tMovimiento movimiento;
 		movimiento.direccion = DERECHA;
-		movimiento.filaDestino = fila;
-		movimiento.columnaDestino = col + 2;
-		movimiento.filaSaltada = fila;
-		movimiento.columnaSaltada = col + 1;
-		posibles.movimientoArray[posibles.pos] = movimiento;
-		posibles.pos += 1;
-	}
-	else if (posibleMovimientoInverso(tablero, fila, col, IZQUIERDA)) {
-		tMovimiento movimiento;
-		movimiento.direccion = IZQUIERDA;
 		movimiento.filaDestino = fila;
 		movimiento.columnaDestino = col - 2;
 		movimiento.filaSaltada = fila;
 		movimiento.columnaSaltada = col - 1;
+		posibles.movimientoArray[posibles.pos] = movimiento;
+		posibles.pos += 1;
+	}
+	if (posibleMovimientoInverso(tablero, fila, col, IZQUIERDA)) {
+		tMovimiento movimiento;
+		movimiento.direccion = IZQUIERDA;
+		movimiento.filaDestino = fila;
+		movimiento.columnaDestino = col + 2;
+		movimiento.filaSaltada = fila;
+		movimiento.columnaSaltada = col + 1;
 		posibles.movimientoArray[posibles.pos] = movimiento;
 		posibles.pos += 1;
 	}
@@ -209,39 +209,40 @@ bool eligeMovimientoInverso(const tTablero& tablero, int fila, int col, tMovimie
 		hayOpcion = true;
 		mov = posibles.movimientoArray[opcion];
 	}
+
 	return hayOpcion;
 }
 bool posibleMovimientoInverso(const tTablero& tablero, int fila, int col, tDireccion dir) {
 	bool posible = false;
 	switch (dir) {
 		case ARRIBA:
-			if (tablero.fila > fila + 2 >= 0 &&
-				tablero.tCeldaArray[fila+2][col] == NULA &&
-				tablero.tCeldaArray[fila+1][col] == NULA
+			if ((tablero.fila > (fila + 2)) &&
+				(tablero.tCeldaArray[fila+2][col] == NULA) &&
+				(tablero.tCeldaArray[fila+1][col] == NULA)
 				) {
 				posible = true;
 			}
 			break;
 		case ABAJO:
-			if (0 < fila - 2 <= tablero.fila &&
-				tablero.tCeldaArray[fila - 2][col] == NULA &&
-				tablero.tCeldaArray[fila - 1][col] == NULA
+			if ((0 <= (fila - 2)) &&
+				(tablero.tCeldaArray[fila - 2][col] == NULA) &&
+				(tablero.tCeldaArray[fila - 1][col] == NULA)
 				) {
 				posible = true;
 			}
 			break;
 		case DERECHA:
-			if (tablero.columna > col + 2 >= 0 &&
-				tablero.tCeldaArray[fila][col + 2] == NULA &&
-				tablero.tCeldaArray[fila][col + 1] == NULA
+			if (((col - 2) >= 0) &&
+				(tablero.tCeldaArray[fila][col - 2] == NULA) &&
+				(tablero.tCeldaArray[fila][col - 1] == NULA)
 				) {
 				posible = true;
 			}
 			break;
 		case IZQUIERDA:
-			if (0 < col - 2 <= tablero.columna &&
-				tablero.tCeldaArray[fila][col - 2] == NULA &&
-				tablero.tCeldaArray[fila][col - 1] == NULA
+			if ((tablero.columna > (col + 2)) &&
+				(tablero.tCeldaArray[fila][col + 2] == NULA) &&
+				(tablero.tCeldaArray[fila][col + 1] == NULA)
 				) {
 				posible = true;
 			}

@@ -27,7 +27,7 @@ int main() {
 	bool seguirJugando = true;
 	int ronda = 0;
 	do {
-		if (ronda == -1) {
+		if (ronda == 0) {
 			if (cargar(juego, "tablero")) {
 				jugar(juego);
 			}
@@ -40,6 +40,7 @@ int main() {
 			srand(time(NULL));
 			int pasos = (MIN_PASOS + rand() % (MAX_PASOS + 1 - MIN_PASOS));
 			generar(juego, pasos);
+			cout << "Hey" << endl;
 			jugar(juego);
 		}
 

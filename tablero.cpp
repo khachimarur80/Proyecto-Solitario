@@ -28,8 +28,6 @@ const char LowerCross = char(193);
 const char LowerRight = char(217);
 const char Square = char(219);
 
-
-const int f_meta = 2, c_meta = 1;
 const int DEFAULT_COLOR = -1;
 // funciones para pintar el tablero
 void pintaCabecera() {
@@ -54,7 +52,7 @@ void pintaBordeCelda(int fila, int filaMeta, int colMeta, const tCeldaArray m) {
     cout << "    ";
     for (int k = 0; k < COLS; k++) {
         cout << Vertical;
-        if (filaMeta == fila && colMeta == k)
+        if ((filaMeta == fila) && (colMeta == k))
             cout << BG_ORANGE;
         else if (m[fila][k] == 0)
             cout << BG_BLACK;
@@ -75,7 +73,7 @@ void pintaCentroCelda(int fila, int filaMeta, int colMeta, const tCeldaArray m) 
             cout << "      ";
         }
         else {
-            if (filaMeta == fila && colMeta == k)
+            if ((filaMeta == fila) && (colMeta == k))
                 cout << BG_ORANGE;
             else
                 cout << BG_BROWN;
@@ -86,7 +84,7 @@ void pintaCentroCelda(int fila, int filaMeta, int colMeta, const tCeldaArray m) 
                 cout << FG_BLUE;
             cout << Square << Square;
             cout << Reset;
-            if (filaMeta == fila && colMeta == k)
+            if ((filaMeta == fila) && (colMeta == k))
                 cout << BG_ORANGE;
             else
                 cout << BG_BROWN;
@@ -101,32 +99,27 @@ void pintaCentroCelda(int fila, int filaMeta, int colMeta, const tCeldaArray m) 
 void cargar(tTablero& table, ifstream& archivo) {
     int aux;
 
-    if (archivo.is_open()) {
-        archivo >> table.fila;
-        archivo >> table.columna;
+    archivo >> table.fila;
+    archivo >> table.columna;
 
-        for (int i = 0; i < table.fila; i++) {
-            for (int j = 0; j < table.columna; j++) {
-                archivo >> aux;
-                if (aux == 0) {
-                    table.tCeldaArray[i][j] = NULA;
-                }
-                else if (aux == 1) {
-                    table.tCeldaArray[i][j] = VACIA;
-                }
-                else if (aux == 2) {
-                    table.tCeldaArray[i][j] = FICHA;
-                }
+    for (int i = 0; i < table.fila; i++) {
+        for (int j = 0; j < table.columna; j++) {
+            archivo >> aux;
+            if (aux == 0) {
+                table.tCeldaArray[i][j] = NULA;
+            }
+            else if (aux == 1) {
+                table.tCeldaArray[i][j] = VACIA;
+            }
+            else if (aux == 2) {
+                table.tCeldaArray[i][j] = FICHA;
             }
         }
-        archivo >> table.cMeta;
-        archivo >> table.fMeta;
-      
-        archivo.close(); 
     }
-    else {
-        cout << "no se pudo abrir ";
-    }
+    archivo >> table.cMeta;
+    archivo >> table.fMeta;
+    
+    archivo.close(); 
 }
 bool valida(const tTablero& table, int fila, int col) {// lo interpreto como q el numro y fila no son enormes rollo no vale 79 90
     bool valida;
@@ -181,9 +174,9 @@ void mostrar(const tTablero& table) {
     cout << Reset;
     pintaBordeHorizontal(UpperLeft, UpperCross, UpperRight);
     for (int fila = 0; fila < FILS; fila++) {
-        pintaBordeCelda(fila, f_meta, c_meta, table.tCeldaArray);
-        pintaCentroCelda(fila, f_meta, c_meta, table.tCeldaArray);
-        pintaBordeCelda(fila, f_meta, c_meta, table.tCeldaArray);
+        pintaBordeCelda(fila, table.fMeta, table.cMeta, table.tCeldaArray);
+        pintaCentroCelda(fila, table.fMeta, table.cMeta, table.tCeldaArray);
+        pintaBordeCelda(fila, table.fMeta, table.cMeta, table.tCeldaArray);
         if (fila < FILS - 1) {
             pintaBordeHorizontal(MidLeft, MidCross, MidRight);
         }
@@ -233,8 +226,14 @@ void fichaAleatoria(const tTablero& tablero, int& fila, int& columna) {
             filaFicha += 1;
         }
     }
-    fila = filaFicha;
-    columna = colFicha - 1;
+    if (colFicha != 0) {
+        columna = colFicha - 1;
+        fila = filaFicha;
+    }
+    else {
+        fila = filaFicha - 1;
+        columna = tablero.columna - 1;
+    }
 }
 void reseteaTablero(tTablero& tablero, int f, int c) {
     tablero.fila = f;

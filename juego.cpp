@@ -7,6 +7,10 @@
 
 using namespace std;
 
+void mostrar(const tJuego& juego) {
+	mostrar(juego.tablero);
+}
+
 bool cargar(tJuego& juego, string nombre) {
 	ifstream archivo;
 	archivo.open(nombre+".txt");
@@ -14,7 +18,6 @@ bool cargar(tJuego& juego, string nombre) {
 	if (archivo.is_open()) {
 		exito = true;
 		juego.estado = JUGANDO;
-		mostrar(juego);
 		cargar(juego.tablero, archivo);
 	}
 	else {
@@ -22,9 +25,6 @@ bool cargar(tJuego& juego, string nombre) {
 	}
 	
 	return exito;
-}
-void mostrar(const tJuego& juego) {
-	mostrar(juego.tablero);
 }
 void ejecutarMovimiento(tJuego& juego) {
 	int col;
@@ -94,8 +94,8 @@ void generar(tJuego& juego, int pasos) {
 	juego.tablero.fMeta = fMeta;
 	juego.tablero.tCeldaArray[fMeta][cMeta] = FICHA;
 	int count = 0;
-	cout << cMeta << " " << fMeta << endl;
 	while (count < pasos && movimientoInverso(juego)) {
+		mostrar(juego);
 		count += 1;
 	}
 }

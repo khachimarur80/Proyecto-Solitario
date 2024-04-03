@@ -13,8 +13,8 @@ typedef struct {
 	tEstado estado;
 } tJuego;
 
-bool cargar(tJuego& juego, string nombre);
 void mostrar(const tJuego& juego);
+bool cargar(tJuego& juego, string nombre);
 void ejecutarMovimiento(tJuego& juego);
 void actualizaEstado(tJuego& juego);
 bool ganador(const tJuego& juego);
