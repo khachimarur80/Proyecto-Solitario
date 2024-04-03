@@ -1,11 +1,15 @@
+
 #ifndef tablero_h
 #define tablero_h
 
-#include <fstream>;
+#include <fstream>
 using namespace std;
 
 const int FILS = 6;
 const int COLS = 6;
+const int MIN_PASOS = 4;
+const int MAX_PASOS = 8;
+
 enum tCelda { NULA, VACIA, FICHA };
 typedef tCelda tCeldaArray[FILS][COLS];
 
@@ -21,7 +25,7 @@ typedef struct {
 
 
 
-void cargar(tTablero& table);
+void cargar(tTablero& table, ifstream& archivo);
 bool valida(const tTablero& table, int fila, int col);
 bool eleccionValida(const tTablero& table, int fila, int
 	col);
@@ -34,5 +38,7 @@ int numFilas(const tTablero& tablero);
 int numColumnas(const tTablero& tablero);
 void ponMeta(tTablero& tablero, int fila, int col);
 
+void fichaAleatoria(const tTablero& tablero, int& fila, int& columna);
+void reseteaTablero(tTablero& tablero, int f, int c);
 #endif
 

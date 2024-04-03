@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <cstdlib>
 #include <fstream>
+#include <ctime>
 
 using namespace std;
 
@@ -97,14 +98,13 @@ void pintaCentroCelda(int fila, int filaMeta, int colMeta, const tCeldaArray m) 
 }
 
 // funciones que hacen update del tablero
-void cargar(tTablero& table) {
-    ifstream archivo;
+void cargar(tTablero& table, ifstream& archivo) {
     int aux;
-    archivo.open("tablero.txt");
+
     if (archivo.is_open()) {
         archivo >> table.fila;
         archivo >> table.columna;
-        
+
         for (int i = 0; i < table.fila; i++) {
             for (int j = 0; j < table.columna; j++) {
                 archivo >> aux;
@@ -119,17 +119,18 @@ void cargar(tTablero& table) {
                 }
             }
         }
-        archivo >> table.fMeta;
         archivo >> table.cMeta;
-        archivo.close();
+        archivo >> table.fMeta;
+      
+        archivo.close(); 
     }
     else {
         cout << "no se pudo abrir ";
     }
 }
-bool valida(const tTablero& table, int fila, int col){// lo interpreto como q el numro y fila no son enormes rollo no vale 79 90
+bool valida(const tTablero& table, int fila, int col) {// lo interpreto como q el numro y fila no son enormes rollo no vale 79 90
     bool valida;
-    if (fila <= table.fila && col <= table.columna) {
+    if (fila <= table.fila && col <= table.columna && table.tCeldaArray[fila][col] != NULA) {
         valida = true;
     }
     else {
@@ -139,21 +140,18 @@ bool valida(const tTablero& table, int fila, int col){// lo interpreto como q el
     return valida;
 }
 
-bool eleccionValida(const tTablero& table, int fila, int col){
-    bool valido;
-   
+bool eleccionValida(const tTablero& table, int fila, int col) {
+    bool valido=false;
+
     if (valida(table, fila, col)) {
-        if (table.tCeldaArray[fila][col] = FICHA) {
+        if (table.tCeldaArray[fila][col] == FICHA) {
             valido = true;
         }
-        else {
-            valido = false;
-        }
-   }
+       
+    }
     return valido;
 }
-void ponCelda(const tTablero& table, int fila, int col,tCelda celda)// La posición se supone válida
-{
+void ponCelda( tTablero& table, int fila, int col, tCelda celda){// referencia cte no se puede modificar
     table.tCeldaArray[fila][col] = celda;
 }
 
@@ -171,18 +169,16 @@ bool esFicha(const tTablero& table, int fila, int col)
 bool esVacia(const tTablero& table, int fila, int col)
 {
     bool valido = false;
-
     if (table.tCeldaArray[fila][col] == VACIA) {
-        valido == true;
+        valido = true;
     }
 
     return valido;
 };
 
 void mostrar(const tTablero& table) {
-    system("cls"); // borrar consola
+    //system("cls"); // borrar consola
     cout << Reset;
-    pintaCabecera();
     pintaBordeHorizontal(UpperLeft, UpperCross, UpperRight);
     for (int fila = 0; fila < FILS; fila++) {
         pintaBordeCelda(fila, f_meta, c_meta, table.tCeldaArray);
@@ -196,21 +192,59 @@ void mostrar(const tTablero& table) {
         }
     }
 }
-int numFilas(const tTablero& tablero) {// es demasiado facil quiza lo he entendido mal uWu
+int numFilas(const tTablero& tablero) {
     return tablero.fila;
 }
-int numColumnas(const tTablero& tablero){
-return tablero.columna;
+int numColumnas(const tTablero& tablero) {
+    return tablero.columna;
 }
 
 void ponMeta(tTablero& tablero, int fila, int col) {
     tablero.fMeta = fila;
     tablero.cMeta = col;
 }
+void dameMeta(const tTablero& tablero, int& fila, int& col) {
+    fila = tablero.fMeta;
+    col = tablero.cMeta;
+}
 
+void fichaAleatoria(const tTablero& tablero, int& fila, int& columna) {
+    srand(time(NULL));
+    int fichasNum = 0;
+    for (int i=0; i<tablero.fila; i++) {
+        for (int j=0; j<tablero.columna; j++) {
+            if (tablero.tCeldaArray[i][j]==FICHA) {
+                fichasNum += 1;
+            }
+        }
+    }
+    int numFicha = (0 + rand() % (fichasNum - 0));
+    int filaFicha = 0;
+    int colFicha = 0;
+    int count = 0;
 
-
-
+    while (count<=numFicha) {
+        if (tablero.tCeldaArray[filaFicha][colFicha]==FICHA) {
+            count += 1;
+        }
+        colFicha += 1;
+        if (colFicha == tablero.columna) {
+            colFicha = 0;
+            filaFicha += 1;
+        }
+    }
+    fila = filaFicha;
+    columna = colFicha - 1;
+}
+void reseteaTablero(tTablero& tablero, int f, int c) {
+    tablero.fila = f;
+    tablero.columna = c;
+    for (int i = 0; i < f; i++) {
+        for (int j = 0; j < c; j++) {
+            tablero.tCeldaArray[i][j] = NULA;
+        }
+    }
+}
 
 
 
