@@ -116,14 +116,16 @@ void cargar(tTablero& table, ifstream& archivo) {
             }
         }
     }
+
     archivo >> table.cMeta;
     archivo >> table.fMeta;
-    
+    table.cMeta -= 1;
+    table.fMeta -= 1;
     archivo.close(); 
 }
-bool valida(const tTablero& table, int fila, int col) {// lo interpreto como q el numro y fila no son enormes rollo no vale 79 90
+bool valida(const tTablero& table, int fila, int col) {
     bool valida;
-    if (fila <= table.fila && col <= table.columna && table.tCeldaArray[fila][col] != NULA) {
+    if (fila < table.fila && col < table.columna && table.tCeldaArray[fila][col] != NULA) {
         valida = true;
     }
     else {
@@ -169,9 +171,20 @@ bool esVacia(const tTablero& table, int fila, int col)
     return valido;
 };
 
+bool esNula(const tTablero& table, int fila, int col)
+{
+    bool valido = false;
+    if (table.tCeldaArray[fila][col] == NULA) {
+        valido = true;
+    }
+
+    return valido;
+};
+
 void mostrar(const tTablero& table) {
     //system("cls"); // borrar consola
     cout << Reset;
+    pintaCabecera();
     pintaBordeHorizontal(UpperLeft, UpperCross, UpperRight);
     for (int fila = 0; fila < FILS; fila++) {
         pintaBordeCelda(fila, table.fMeta, table.cMeta, table.tCeldaArray);

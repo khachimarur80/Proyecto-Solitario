@@ -8,19 +8,25 @@
 using namespace std;
 
 bool fichaBloqueada(const tTablero& tablero, int fila, int col) {
-	tMovimiento moverArriba = moviendo(ARRIBA, fila, col);
-	tMovimiento moverAbajo = moviendo(ARRIBA, fila, col);
-	tMovimiento moverDerecha = moviendo(ARRIBA, fila, col);
-	tMovimiento moverIzquierda = moviendo(ARRIBA, fila, col);
+	bool bloqueada = false;
 
-	tMovimientoLista posibles;
-	posibles.movimientoArray[0] = moverArriba;
-	posibles.movimientoArray[1] = moverAbajo;
-	posibles.movimientoArray[2] = moverDerecha;
-	posibles.movimientoArray[3] = moverIzquierda;
-	posibles.pos = 4;
+	if (tablero.tCeldaArray[fila][col]==FICHA) {
 
-	return !movimientosPosibles(tablero, fila, col, posibles);
+		tMovimiento mov;
+		tMovimientoLista posibles;
+		int i = 0;
+
+		for (tDireccion dir = ARRIBA; dir <= IZQUIERDA; dir = tDireccion(dir + 1)) {
+			mov =  moviendo(dir, fila, col);
+			posibles.movimientoArray[i] = mov;
+			i += 1;
+		}
+		posibles.pos = 4;
+
+		bloqueada = !movimientosPosibles(tablero, fila, col, posibles);
+	}
+
+	return bloqueada;
 }
 tMovimiento moviendo(tDireccion dir, int fila, int col) {
 	tMovimiento movimiento;
@@ -71,55 +77,25 @@ tMovimiento leeMovimiento(const tTablero& tablero, int& fila, int& col) {
 
 	return eligeMovimiento(posibles);
 }
+
 bool movimientosPosibles(const tTablero& tablero, int fila, int col, tMovimientoLista& listaMov) {
 	bool alguno = false;
 
 	if (tablero.tCeldaArray[fila][col] == FICHA) {
-		tMovimiento movimientoArriba;
-		tMovimiento movimientoAbajo;
-		tMovimiento movimientoDerecha;
-		tMovimiento movimientoIzquierda;
+		tMovimiento mov;
 
-		movimientoArriba = moviendo(ARRIBA, fila, col);
-		movimientoAbajo = moviendo(ABAJO, fila, col);
-		movimientoDerecha = moviendo(DERECHA, fila, col);
-		movimientoIzquierda = moviendo(IZQUIERDA, fila, col);
-
-		if (
-			valida(tablero, movimientoArriba.filaDestino, movimientoArriba.columnaDestino) &&
-			esFicha(tablero, movimientoArriba.filaSaltada, movimientoArriba.columnaSaltada) &&
-			esVacia(tablero, movimientoArriba.filaDestino, movimientoArriba.columnaDestino)
-			) {
-			listaMov.movimientoArray[listaMov.pos] = movimientoArriba;
-			listaMov.pos += 1;
-			alguno = true;
-		}
-		if (
-			valida(tablero, movimientoAbajo.filaDestino, movimientoAbajo.columnaDestino) &&
-			esFicha(tablero, movimientoAbajo.filaSaltada, movimientoAbajo.columnaSaltada) &&
-			esVacia(tablero, movimientoAbajo.filaDestino, movimientoAbajo.columnaDestino)
-			) {
-			listaMov.movimientoArray[listaMov.pos] = movimientoAbajo;
-			listaMov.pos += 1;
-			alguno = true;
-		}
-		if (
-			valida(tablero, movimientoDerecha.filaDestino, movimientoDerecha.columnaDestino) &&
-			esFicha(tablero, movimientoDerecha.filaSaltada, movimientoDerecha.columnaSaltada) &&
-			esVacia(tablero, movimientoDerecha.filaDestino, movimientoDerecha.columnaDestino)
-			) {
-			listaMov.movimientoArray[listaMov.pos] = movimientoDerecha;
-			listaMov.pos += 1;
-			alguno = true;
-		}
-		if (
-			valida(tablero, movimientoIzquierda.filaDestino, movimientoIzquierda.columnaDestino) &&
-			esFicha(tablero, movimientoIzquierda.filaSaltada, movimientoIzquierda.columnaSaltada) &&
-			esVacia(tablero, movimientoIzquierda.filaDestino, movimientoIzquierda.columnaDestino)
-			) {
-			listaMov.movimientoArray[listaMov.pos] = movimientoIzquierda;
-			listaMov.pos += 1;
-			alguno = true;
+		for (tDireccion dir = ARRIBA; dir <= IZQUIERDA; dir = tDireccion(dir + 1)) {
+			mov = moviendo(dir, fila, col);
+			if (
+				((0 <= mov.filaDestino) && (mov.filaDestino < tablero.fila)) &&
+				((0 <= mov.columnaDestino) && (mov.columnaDestino < tablero.columna)) &&
+				esNula(tablero, mov.filaSaltada, mov.columnaSaltada) &&
+				esNula(tablero, mov.filaDestino, mov.columnaDestino)
+				) {
+				listaMov.movimientoArray[listaMov.pos] = mov;
+				listaMov.pos += 1;
+				alguno = true;
+			}
 		}
 	}
 	
@@ -162,50 +138,10 @@ void movimientoFicha(tTablero& tablero, int fila, int col, const tMovimiento& mo
 
 bool eligeMovimientoInverso(const tTablero& tablero, int fila, int col, tMovimiento& mov) {
 	tMovimientoLista posibles;
-	if (posibleMovimientoInverso(tablero, fila, col, ARRIBA)) {
-		tMovimiento movimiento;
-		movimiento.direccion = ARRIBA;
-		movimiento.filaDestino = fila + 2;
-		movimiento.columnaDestino = col;
-		movimiento.filaSaltada = fila + 1;
-		movimiento.columnaSaltada = col;
-		posibles.movimientoArray[posibles.pos] = movimiento;
-		posibles.pos += 1;
-	}
-	if(posibleMovimientoInverso(tablero, fila, col, ABAJO)) {
-		tMovimiento movimiento;
-		movimiento.direccion = ABAJO;
-		movimiento.filaDestino = fila - 2;
-		movimiento.columnaDestino = col;
-		movimiento.filaSaltada = fila - 1;
-		movimiento.columnaSaltada = col;
-		posibles.movimientoArray[posibles.pos] = movimiento;
-		posibles.pos += 1;
-	}
-	if (posibleMovimientoInverso(tablero, fila, col, DERECHA)) {
-		tMovimiento movimiento;
-		movimiento.direccion = DERECHA;
-		movimiento.filaDestino = fila;
-		movimiento.columnaDestino = col - 2;
-		movimiento.filaSaltada = fila;
-		movimiento.columnaSaltada = col - 1;
-		posibles.movimientoArray[posibles.pos] = movimiento;
-		posibles.pos += 1;
-	}
-	if (posibleMovimientoInverso(tablero, fila, col, IZQUIERDA)) {
-		tMovimiento movimiento;
-		movimiento.direccion = IZQUIERDA;
-		movimiento.filaDestino = fila;
-		movimiento.columnaDestino = col + 2;
-		movimiento.filaSaltada = fila;
-		movimiento.columnaSaltada = col + 1;
-		posibles.movimientoArray[posibles.pos] = movimiento;
-		posibles.pos += 1;
-	}
 	srand(time(NULL));
-	int opcion = (0 + rand() % (posibles.pos- 0));
 	bool hayOpcion = false;
-	if (posibles.pos >= 1) {
+	if (movimientosPosibles(tablero, fila, col, posibles)) {
+		int opcion = (0 + rand() % (posibles.pos- 0));
 		hayOpcion = true;
 		mov = posibles.movimientoArray[opcion];
 	}

@@ -49,17 +49,27 @@ void actualizaEstado(tJuego& juego) {
 }
 bool ganador(const tJuego& juego) {
 	int numFichas = 0;
-	bool valido = false;
-	for (int i = 0; i < juego.tablero.fila; i++) {
-		for (int j = 0; j < juego.tablero.columna; j++) {
-			if (juego.tablero.tCeldaArray[i][j] == FICHA) {
-				numFichas += 1;
+	bool valido = true;
+	bool limite = true;
+	int i = 0;
+	int j = 0;
+	if (juego.tablero.tCeldaArray[juego.tablero.fMeta][juego.tablero.cMeta] == FICHA) {
+		while (valido && limite) {
+			if (juego.tablero.tCeldaArray[i][j] == FICHA && (juego.tablero.cMeta!=j || juego.tablero.fMeta!=i) ) {
+				valido = false;
+			}
+			if (fichaBloqueada(juego.tablero, i, j) && (juego.tablero.cMeta!=j || juego.tablero.fMeta!=i) ) {
+				valido = false;
+			}
+			if (i==(juego.tablero.columna-1) && (j==juego.tablero.fila-1)) {
+				limite = false;
+			}
+			j += 1;
+			if (j == juego.tablero.columna ) {
+				j = 0;
+				i += 1;
 			}
 		}
-	}
-
-	if (numFichas == 1 && juego.tablero.tCeldaArray[juego.tablero.fMeta][juego.tablero.cMeta] == FICHA) {
-		valido = true;
 	}
 	return valido;
 }
@@ -94,8 +104,7 @@ void generar(tJuego& juego, int pasos) {
 	juego.tablero.fMeta = fMeta;
 	juego.tablero.tCeldaArray[fMeta][cMeta] = FICHA;
 	int count = 0;
-	while (count < pasos && movimientoInverso(juego)) {
-		mostrar(juego);
+	while ((count < pasos) && movimientoInverso(juego)) {
 		count += 1;
 	}
 }
@@ -105,7 +114,6 @@ bool movimientoInverso(tJuego& juego) {
 	int col;
 	tMovimiento mov;
 	fichaAleatoria(juego.tablero, fila, col);
-
 	bool hayOpcion = eligeMovimientoInverso(juego.tablero, fila, col, mov);
 
 	if (hayOpcion) {

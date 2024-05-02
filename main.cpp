@@ -9,39 +9,54 @@
 
 using namespace std;
 
-void jugar(tJuego juego) {
+void jugar(tJuego juego, bool& repetir) {
+	repetir = false;
 	while (juego.estado == JUGANDO) {
 		mostrar(juego.tablero);
 		ejecutarMovimiento(juego);
 	}
 	if (juego.estado == GANADOR) {
-		cout << "Enhorabuena! Quieres jugar otra partida ? S/N " << endl;
+		mostrar(juego.tablero);
+		cout << "Enhorabuena! Quieres jugar otra partida ? S/N: ";
 	}
 	else if (juego.estado == BLOQUEO) {
-		cout << "Vaya! Casi lo tenías! Quieres intentarlo otra vez? S/N " << endl;
+		mostrar(juego.tablero);
+		repetir = true;
+		cout << "Vaya! Casi lo tenias! Quieres intentarlo otra vez? S/N: ";
 	}
 }
 
 int main() {
 	tJuego juego;
 	bool seguirJugando = true;
-	int ronda = 0;
+	char aleatorio = 'S';
+	bool repetir = false;
 	do {
-		if (ronda == 0) {
-			if (cargar(juego, "tablero")) {
-				jugar(juego);
-			}
-			else {
-				cout << "Error al cargar tablero!" << endl;
-				seguirJugando = false;
-			}
+		if (repetir) {
+			jugar(juego, repetir);
 		}
 		else {
-			srand(time(NULL));
-			int pasos = (MIN_PASOS + rand() % (MAX_PASOS + 1 - MIN_PASOS));
-			generar(juego, pasos);
-			cout << "Hey" << endl;
-			jugar(juego);
+			/*do {
+				cout << "Quieres que el tablero se genere de forma aleatoria? S/N: ";
+				cin >> aleatorio;
+			}
+			while (aleatorio != 'S' && aleatorio != 'N');*/
+
+			if (aleatorio == 'S') {
+				srand(time(NULL));
+				int pasos = (MIN_PASOS + rand() % (MAX_PASOS + 1 - MIN_PASOS));
+				generar(juego, pasos);
+				jugar(juego, repetir);
+			}
+			else if (aleatorio == 'N') {
+				if (cargar(juego, "tablero")) {
+					jugar(juego, repetir);
+				}
+				else {
+					cout << "Error al cargar tablero!" << endl;
+					seguirJugando = false;
+				}
+			}
 		}
 
 		char respuesta;
@@ -53,9 +68,6 @@ int main() {
 		if (respuesta == 'N') {
 			cout << "Muchas gracias por jugar!" << endl;
 			seguirJugando = false;
-		}
-		else {
-			ronda += 1;
 		}
 	}
 	while (seguirJugando);
